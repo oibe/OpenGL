@@ -1,0 +1,196 @@
+package proj3;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import java.lang.*;
+import java.nio.*;
+import java.awt.Window;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.*;
+import java.util.*;
+import java.text.*;
+
+import javax.media.opengl.GL;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCanvas;
+import javax.media.opengl.GLEventListener;
+
+import com.sun.opengl.util.Animator;
+import com.sun.opengl.util.FPSAnimator;
+import com.sun.opengl.util.GLUT;
+
+/* class SimpleGLCanvas
+ * An extension of a JOGL GLCanvas that creates an OpenGL
+ * drawing area with RGB color and a depth buffer, with a flag that
+ * controls whether the animation is on
+ *
+ * Use the OpenGL API from the abstract methods init(), draw() and projection()
+ *
+ * Doug DeCarlo
+ */
+
+public abstract class SimpleGLCanvas extends GLCanvas 
+implements GLEventListener
+{
+    // Whether aspect ratio is preserved rigidly or smoothly
+    final boolean smoothAspect = false;
+    
+    private FPSAnimator animator;
+    protected GLUT glut = null;
+    
+    // Constructor
+    public SimpleGLCanvas(Window parent)
+    {
+        glut = new GLUT();
+        
+        animator = new FPSAnimator(this, 50);
+        parent.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    // Run this on another thread than the AWT event queue to
+                    // make sure the call to Animator.stop() completes before
+                    // exiting
+                    new Thread(new Runnable() {
+                            public void run() {
+                                if (animator.isAnimating())
+	            		  animator.stop();
+                                System.exit(0);
+                            }
+                        }).start();
+                }
+            });
+        
+        addGLEventListener(this);
+        
+        // Reset timer
+        resetClock();
+    }
+    
+    // ------------------------------------------------------------
+    // Animation clock
+    
+    // Starting time of program
+    public long startingTime;
+    
+    // Record starting time of program
+    public void resetClock()
+    {
+        startingTime = System.currentTimeMillis();
+    }
+    
+    // Return current time (in seconds) since program started
+    public double readClock()
+    {
+        return (System.currentTimeMillis() - startingTime) / 1000.0;
+    }
+    
+    // Check if animation is proceeding
+    public boolean isAnimated()
+    {
+        return animator.isAnimating();
+    }
+    
+    // Start/stop animation
+    public void setAnimation(boolean on)
+    {
+        if (on)
+          animator.start();
+        else
+          animator.stop();
+    }
+    
+    // ------------------------------------------------------------
+    // GLEventListener
+    public void reshape(GLAutoDrawable drawable, int x, int y,
+                        int width, int height)
+    {
+        // Specify new projection for this window
+        projection(drawable.getGL(), width, height);
+    }
+    
+    public void init(GLAutoDrawable drawable)
+    {
+        init(drawable.getGL());
+    }
+    
+    public void display(GLAutoDrawable drawable)
+    {
+        GL gl = drawable.getGL();
+        
+        // Draw the contents of the window (abstract method)
+        draw(gl);
+        
+        // If animation is on, and dumping
+        if (Main.scene.drawAnimation.value) {
+            if (Main.scene.dumpPrefix != null) {
+                // the size of the window
+                int width = getWidth();
+                int height = getHeight();
+                // Write frame to output file
+                byte[] pixels = new byte[width*height*3];
+                Buffer buffer = ByteBuffer.wrap(pixels);;
+                
+                gl.glReadBuffer(GL.GL_BACK);
+                gl.glPixelStorei(GL.GL_PACK_ALIGNMENT, 1);
+                gl.glReadPixels(0, 0, width, height, 
+                                GL.GL_RGB, GL.GL_UNSIGNED_BYTE, buffer);
+                
+                writeNextPNM(Main.scene.dumpPrefix, pixels);
+                
+                Main.scene.incrementFrameNumber();
+            }
+        }
+    }
+    
+    public void displayChanged(GLAutoDrawable drawable,
+                               boolean modeChanged, boolean deviceChanged)
+    {
+    }
+    
+    // Write the next PNM file to output
+    private void writeNextPNM(String prefix, byte[] pixels)
+    {
+        Scene s = Main.scene;
+        DecimalFormat digits = new DecimalFormat("0000");
+        
+    	// the size of the window
+    	int width = getWidth();
+    	int height = getHeight();
+        
+        String header = new String("P6" + '\n' +
+                                   width + " " + height + '\n' +
+                                   "255" + '\n');
+	
+        String filename = new String(prefix +
+                                     digits.format(s.getFrameNumber()) +
+                                     ".ppm");
+	
+        byte[] bhead = header.getBytes();
+	
+        try {
+            FileOutputStream stream = new FileOutputStream(filename);
+            
+            stream.write(bhead);
+            for (int r = 0; r < height; r++) {
+                stream.write(pixels, width*3*(height-r-1), width*3);
+            }
+            
+            stream.close();
+        } catch (IOException e) {
+            System.out.println(e);
+            System.exit(-1);
+        }
+    }
+    
+    // ---------------------------------------------------------------------
+    // Drawing and projection functions
+    
+    // OpenGL Initialization
+    abstract public void init(GL gl);
+    
+    // Called when window is created or whenever it is resized
+    abstract public void projection(GL gl, int width, int height);
+    
+    // Called whenever window needs to be redrawn
+    abstract public void draw(GL gl);
+}

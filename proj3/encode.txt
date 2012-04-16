@@ -1,0 +1,22 @@
+OUTPUT          anim.mpg
+
+INPUT_DIR       /tmp/decarlo
+
+INPUT
+image*.ppm [0000-0299]
+END_INPUT
+
+# compression spec
+IQSCALE                 4
+PQSCALE                 6
+BQSCALE                 8
+PSEARCH_ALG             LOGARITHMIC
+BSEARCH_ALG             CROSS2
+GOP_SIZE                15
+SLICES_PER_FRAME        1
+PIXEL                   HALF
+RANGE                   30
+PATTERN			IBBPBBPBBP
+REFERENCE_FRAME         ORIGINAL
+BASE_FILE_FORMAT        PPM
+INPUT_CONVERT           *

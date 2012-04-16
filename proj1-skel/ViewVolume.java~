@@ -1,0 +1,276 @@
+/* class ViewVolume
+ * OpenGL methods for drawing a view volume (given Camera specification)
+ * using OpenGL clipping planes
+ *
+ * CS 428   Doug DeCarlo
+ */
+
+import javax.media.opengl.*;
+import javax.vecmath.*;
+
+class ViewVolume
+{
+	
+    // Constructor
+    public ViewVolume() {}
+    
+    //-----------------------------------------------------------------------
+
+    // Draw view volume (given camera specification in Camera) in
+    // its canonical coordinate system
+    public void draw(GL gl)
+    {
+    	double far = -Camera.far();
+    	double near = -Camera.near();
+    	double height = far*(Camera.top()/near);
+    	double width = (far*Camera.right())/near;
+    	gl.glColor3d(0.0, 1.0, 0.0);
+    		if(Camera.isPerspective()){
+    			
+    			gl.glBegin(GL.GL_LINE_LOOP);
+    			gl.glColor3d(1.0,0.0, 0.0);
+    				gl.glVertex3d(-width, height, far);
+    				gl.glVertex3d(width,  height, far);
+    				gl.glColor3d(0.0, 1.0, 0.0);
+    			gl.glEnd();
+    			gl.glBegin(GL.GL_LINE_LOOP);
+    				gl.glVertex3d(width, -height, far);
+    				gl.glVertex3d(-width,-height, far);
+    			gl.glEnd();
+       
+    			gl.glBegin(GL.GL_LINE_LOOP);
+				gl.glVertex3d(-width, height, far);
+				gl.glVertex3d(-width,-height, far);
+			gl.glEnd();
+				
+			gl.glBegin(GL.GL_LINE_LOOP);
+				gl.glVertex3d(width, height, far);
+				gl.glVertex3d(width,-height, far);
+			gl.glEnd();
+    			
+    			
+    			
+    			gl.glColor3d(1.0, 0.0, 0.0);
+    			gl.glBegin(GL.GL_LINE_LOOP);
+    				gl.glVertex3d(Camera.left(),Camera.top(), near);
+    				gl.glVertex3d(-width,height, far);
+    			gl.glEnd();
+    			gl.glColor3d(0.0, 1.0, 0.0);
+        
+    			gl.glColor3d(1.0, 0.0, 0.0);
+    			gl.glBegin(GL.GL_LINE_LOOP);
+    				gl.glVertex3d(Camera.right(),Camera.top(), near);
+    				gl.glVertex3d(width,height, far);
+    			gl.glEnd();
+    			gl.glColor3d(0.0, 1.0, 0.0);
+    	
+    			gl.glBegin(GL.GL_LINE_LOOP);
+    				gl.glVertex3d(Camera.left(),Camera.bottom(), near);
+    				gl.glVertex3d(-width,-height, far);
+    			gl.glEnd();
+		
+    			gl.glBegin(GL.GL_LINE_LOOP);
+    				gl.glVertex3d(Camera.right(),Camera.bottom(), near);
+    				gl.glVertex3d(width,-height, far);
+    			gl.glEnd();
+		
+    			gl.glColor3d( 1.0, 1.0, 0.0);
+    			gl.glLineWidth(4.0f);
+    			gl.glBegin(GL.GL_LINE_LOOP);
+    				gl.glVertex3d(Camera.left(),Camera.top(), near);
+    				gl.glVertex3d(Camera.right(),Camera.top(),near);
+    				gl.glVertex3d(Camera.right(),Camera.bottom(), near);
+    				gl.glVertex3d(Camera.left(),Camera.bottom(), near);
+    			gl.glEnd();
+    			gl.glLineWidth(1.0f);
+    			gl.glColor3d( 0.0, 1.0, 0.0);
+    	}
+    	else{
+    		    		
+    		gl.glColor3d(1.0, 1.0, 0.0);
+    		gl.glLineWidth(4.0f);
+    		gl.glBegin(GL.GL_LINE_LOOP);
+        		gl.glVertex3d(Camera.left(),Camera.top(), near);
+        		gl.glVertex3d(Camera.right(),Camera.top(), near);
+        		gl.glVertex3d(Camera.right(),Camera.bottom(), near);
+        		gl.glVertex3d(Camera.left(),Camera.bottom(), near);
+        	gl.glEnd();
+        	gl.glLineWidth(1.0f);
+        	gl.glColor3d( 0.0, 1.0, 0.0);
+        	
+        	gl.glBegin(GL.GL_LINE_LOOP);
+        	gl.glColor3d( 1.0, 0.0, 0.0);
+    			gl.glVertex3d(Camera.left(),Camera.top(), far);
+    			gl.glVertex3d(Camera.right(),Camera.top(), far);
+    		gl.glColor3d( 0.0, 1.0, 0.0);
+    		gl.glEnd();
+    		
+    		gl.glBegin(GL.GL_LINE_LOOP);
+    			gl.glVertex3d(Camera.right(),Camera.bottom(), far);
+    			gl.glVertex3d(Camera.left(),Camera.bottom(), far);
+    		gl.glEnd();
+    		
+    		gl.glBegin(GL.GL_LINE_LOOP);
+				gl.glVertex3d(Camera.left(),Camera.top(), far);
+				gl.glVertex3d(Camera.left(),Camera.bottom(), far);
+			gl.glEnd();
+			
+			gl.glBegin(GL.GL_LINE_LOOP);
+				gl.glVertex3d(Camera.right(),Camera.top(), far);
+				gl.glVertex3d(Camera.right(),Camera.bottom(), far);
+			gl.glEnd();
+			
+    		gl.glBegin(GL.GL_LINE_LOOP);
+    			gl.glVertex3d(Camera.left(),Camera.bottom(), near);
+    			gl.glVertex3d(Camera.left(),Camera.bottom(), far);
+    		gl.glEnd();
+		
+    		gl.glBegin(GL.GL_LINE_LOOP);
+    			gl.glVertex3d(Camera.right(),Camera.bottom(), near);
+    			gl.glVertex3d(Camera.right(),Camera.bottom(), far);
+    			gl.glEnd();
+	
+    		gl.glColor3d(1.0, 0.0, 0.0);
+    		gl.glBegin(GL.GL_LINE_LOOP);
+				gl.glVertex3d(Camera.left(),Camera.top(), near);
+				gl.glVertex3d(Camera.left(),Camera.top(), far);
+			gl.glEnd();
+			
+			gl.glBegin(GL.GL_LINE_LOOP);
+				gl.glVertex3d(Camera.right(),Camera.top(), near);
+				gl.glVertex3d(Camera.right(),Camera.top(), far);
+			gl.glEnd();
+			gl.glColor3d(0.0, 1.0, 0.0);
+    	}
+    }
+         
+    // Specify positions of all clipping planes
+    //  - this is called from WorldView.draw()
+    //  - it calls placeClipPlane() below 6 times -- once for each
+    //    side of the view volume
+    public void placeClipPlanes(GL gl)
+    {
+    	double far = -Camera.far();
+    	double near = -Camera.near();
+    	double height = far*(Camera.top()/near);
+    	double width = (far*Camera.right())/near;
+    	Point3d lbn = new Point3d(Camera.left(),Camera.bottom(),near);
+    	Point3d ltn	= new Point3d(Camera.left(),Camera.top(),near);
+    	Point3d rtn	= new Point3d(Camera.right(),Camera.top(),near); 
+    	Point3d rbn	= new Point3d(Camera.right(),Camera.bottom(),near);
+    	Point3d lbf	= new Point3d(Camera.left(),Camera.bottom(),far);
+    	Point3d ltf	= new Point3d(Camera.left(),Camera.top(),far);
+    	Point3d rtf	= new Point3d(Camera.right(),Camera.top(),far);
+    	Point3d rbf = new Point3d(Camera.right(),Camera.bottom(),far);
+    	Point3d rbf_frust = new Point3d(width,-height,far);
+    	Point3d rtf_frust = new Point3d(width,height, far);
+    	Point3d ltf_frust = new Point3d(-width,height, far);
+    	Point3d lbf_frust = new Point3d(-width,-height, far);
+    	if(Camera.isPerspective() == false){
+    		placeClipPlane(gl,0,lbn,ltn,ltf);	//left plane
+    		placeClipPlane(gl,1,rbn,rbf,rtf);	//right plane
+    		placeClipPlane(gl,2,lbn,rbn,rtn);	//near plane
+    		placeClipPlane(gl,3,lbf,ltf,rtf);	//far plane
+    		placeClipPlane(gl,4,lbn,lbf,rbf);	//bottom plane
+    		placeClipPlane(gl,5,ltn,rtn,rtf);	//top plane
+    	}else{
+    		placeClipPlane(gl,0,lbn,lbf_frust,rbf_frust);	//bottom plane
+    		placeClipPlane(gl,1,ltn,rtn,rtf_frust);			//top plane			
+    		placeClipPlane(gl,2,lbf_frust,ltf_frust,rtf_frust);	//far plane
+    		placeClipPlane(gl,3,lbn,rbn,rtn);					//near plane
+    		placeClipPlane(gl,4,lbn,ltn,ltf_frust);				//left plane
+    		placeClipPlane(gl,5,rbn,rbf_frust,rtf_frust); 		//right plane
+    	}
+    }
+    public void placeClipPlanesReverse(GL gl)
+    {
+     	double far = -Camera.far();
+    	double near = -Camera.near();
+    	double height = far*(Camera.top()/near);
+    	double width = (far*Camera.right())/near;
+    	Point3d lbn = new Point3d(Camera.left(),Camera.bottom(),near);
+    	Point3d ltn	= new Point3d(Camera.left(),Camera.top(),near);
+    	Point3d rtn	= new Point3d(Camera.right(),Camera.top(),near); 
+    	Point3d rbn	= new Point3d(Camera.right(),Camera.bottom(),near);
+    	Point3d lbf	= new Point3d(Camera.left(),Camera.bottom(),far);
+    	Point3d ltf	= new Point3d(Camera.left(),Camera.top(),far);
+    	Point3d rtf	= new Point3d(Camera.right(),Camera.top(),far);
+    	Point3d rbf = new Point3d(Camera.right(),Camera.bottom(),far);
+    	Point3d rbf_frust = new Point3d(width,-height,far);
+    	Point3d rtf_frust = new Point3d(width,height, far);
+    	Point3d ltf_frust = new Point3d(-width,height, far);
+    	Point3d lbf_frust = new Point3d(-width,-height, far);
+    	if(Camera.isPerspective() == false){
+    		placeClipPlane(gl,0,ltf,ltn,lbn);	//left plane
+    		placeClipPlane(gl,1,rtf,rbf,rbn);	//right plane
+    		placeClipPlane(gl,2,rtn,rbn,lbn);	//near plane
+    		placeClipPlane(gl,3,rtf,ltf,lbf);	//far plane
+    		placeClipPlane(gl,4,rbf,lbf,lbn);	//bottom plane
+    		placeClipPlane(gl,5,rtf,rtn,ltn);	//top plane
+    	}else{
+    		placeClipPlane(gl,0,rbf_frust,lbf_frust,lbn);	//bottom plane
+    		placeClipPlane(gl,1,rtf_frust,rtn,ltn);			//top plane			
+    		placeClipPlane(gl,2,rtf_frust,ltf_frust,lbf_frust);	//far plane
+    		placeClipPlane(gl,3,rtn,rbn,lbn);					//near plane
+    		placeClipPlane(gl,4,ltf_frust,ltn,lbn);				//left plane
+    		placeClipPlane(gl,5,rtf_frust,rbf_frust,rbn); 		//right plane
+    	}
+    } 
+
+    // Specify position of one particular clipping plane given 3
+    // points on the plane ordered counter-clockwise
+    void placeClipPlane(GL gl, int plane, Point3d p1, Point3d p2, Point3d p3)
+    {
+    	double[] eqn = new double[4];
+        // Plane equation Ax + By + Cz + D stored as [A,B,C,D]
+    	
+        //determine two vectors from p2->p1 and from p2->p3
+        Vector3d vectorOne = new Vector3d(p1.x-p2.x,p1.y-p2.y,p1.z-p2.z);
+        Vector3d vectorTwo = new Vector3d(p3.x-p2.x,p3.y-p2.y,p3.z-p2.z);
+        
+        
+        Vector3d normalVector = new Vector3d();
+        //cross product to get the normal vector
+        normalVector.cross(vectorOne,vectorTwo);
+        // Compute the plane equation from the 3 points -- fill in eqn[]
+        eqn[0] = normalVector.x;
+        eqn[1] = normalVector.y;
+        eqn[2] = normalVector.z;
+        
+        //vector to point on the plane
+        Vector3d positionVector = new Vector3d(p1.x,p1.y,p1.z);
+        
+        //d = shortest distance from origin to plane, is dot product of normal vector and a point on the plane
+        //the point on the plane is expressed as a position vector.
+        eqn[3]= -1*positionVector.dot(normalVector);
+
+        // Specify the clipping plane   
+        switch(plane){
+			case 0: gl.glClipPlane(GL.GL_CLIP_PLANE0, eqn,0);break;
+			case 1: gl.glClipPlane(GL.GL_CLIP_PLANE1, eqn,0);break;
+			case 2: gl.glClipPlane(GL.GL_CLIP_PLANE2, eqn,0);break;
+			case 3: gl.glClipPlane(GL.GL_CLIP_PLANE3, eqn,0);break;
+			case 4: gl.glClipPlane(GL.GL_CLIP_PLANE4, eqn,0);break;
+			case 5: gl.glClipPlane(GL.GL_CLIP_PLANE5, eqn,0);break;
+			default: break;
+        }
+    }
+
+    public static void disablePlanes(GL gl){
+    	gl.glDisable(GL.GL_CLIP_PLANE0);
+    	gl.glDisable(GL.GL_CLIP_PLANE1);
+    	gl.glDisable(GL.GL_CLIP_PLANE2);
+    	gl.glDisable(GL.GL_CLIP_PLANE3);
+    	gl.glDisable(GL.GL_CLIP_PLANE4);
+    	gl.glDisable(GL.GL_CLIP_PLANE5);
+    }
+    
+    public static void enablePlanes(GL gl){
+    	gl.glEnable(GL.GL_CLIP_PLANE0);
+   	 	gl.glEnable(GL.GL_CLIP_PLANE1);
+   	 	gl.glEnable(GL.GL_CLIP_PLANE2);
+   	 	gl.glEnable(GL.GL_CLIP_PLANE3);
+   	 	gl.glEnable(GL.GL_CLIP_PLANE4);
+   	 	gl.glEnable(GL.GL_CLIP_PLANE5);
+    }
+}

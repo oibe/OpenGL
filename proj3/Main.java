@@ -1,0 +1,295 @@
+/* class Main
+ * The main program -- construct the GUI and displays
+ *
+ * Doug DeCarlo
+ */
+ 
+import java.util.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+
+public class Main extends JFrame
+{
+    // Swing OpenGL component classes
+    static WorldView worldDraw;
+
+    // Viewed scene
+    static Scene scene;
+
+    // Method to refresh entire display
+    public static void refresh()
+    {
+        if (!SwingUtilities.isEventDispatchThread())
+          return;
+
+        // If animation on, let that take care of the redraw...
+        if (worldDraw.isAnimated())
+          return;
+
+        worldDraw.display();
+    }
+
+    // Method to recompute scene
+    public static void recompute()
+    {
+        if (!SwingUtilities.isEventDispatchThread())
+          return;
+
+        worldDraw.setAnimation();
+    }
+
+    // Construct GUI for a set of parameters
+    public static void makeControls(Container controls,
+                                    GridBagLayout controlLayout,
+                                    GridBagConstraints controlCon,
+                                    Vector dpList, Vector optList,
+                                    String title)
+    {
+        Container spec = new Container();
+        controlLayout.setConstraints(spec, controlCon);
+        controls.add(spec);
+
+        GridBagLayout layout = new GridBagLayout();
+        GridBagConstraints con = new GridBagConstraints();
+
+        spec.setLayout(layout);
+
+        Iterator i = dpList.iterator();
+        while (i.hasNext()) {
+            DoubleParameter dp = (DoubleParameter)(i.next());
+
+            // Make slider and text field
+            JSlider val = new JSlider(JSlider.HORIZONTAL);
+            JTextField tval = new JTextField(5);
+
+            dp.register(val);
+            dp.register(tval);
+
+            // Lay out label, slider, text field
+            con.fill = GridBagConstraints.NONE;
+            con.weightx = 0.0;
+            con.weighty = 0.0;
+            con.gridwidth = 1;
+
+            JLabel name = new JLabel(dp.name);
+            layout.setConstraints(name, con);
+            spec.add(name);
+
+            con.fill = GridBagConstraints.HORIZONTAL;
+            con.weightx = 0.8;
+            layout.setConstraints(val, con);
+            spec.add(val);
+            
+            con.weightx = 0.2;
+            con.gridwidth = GridBagConstraints.REMAINDER;
+            layout.setConstraints(tval, con);
+            spec.add(tval);
+        }
+
+        // Label column on bottom
+        con.fill = GridBagConstraints.VERTICAL;
+        con.anchor = GridBagConstraints.SOUTH;
+        con.weightx = 0.0;
+        con.weighty = 1.0;
+        con.gridwidth = GridBagConstraints.REMAINDER;
+        JLabel ltitle = new JLabel(title);
+        layout.setConstraints(ltitle, con);
+        spec.add(ltitle);
+
+        // Display options
+        con.anchor = GridBagConstraints.WEST;
+        i = optList.iterator();
+        while (i.hasNext()) {
+            BooleanParameter bp = (BooleanParameter)(i.next());
+
+            JCheckBox ck = new JCheckBox(bp.name);
+            bp.register(ck);
+
+            layout.setConstraints(ck, con);
+            spec.add(ck);
+        }
+    }
+
+    // Main program -- create and start GUI
+    public Main()
+    {
+        // Create drawing area for scene
+        if (scene.dumpPrefix == null) {
+          worldDraw = new WorldView(this, scene);
+          worldDraw.setSize(600, 500);
+        } else {
+          worldDraw = new WorldView(this, scene);
+          worldDraw.setSize(320, 240);
+        }
+
+        // Create menubar
+        JMenuBar menubar = new JMenuBar();
+        setJMenuBar(menubar);
+
+        JMenu menu = new JMenu("File");
+        menu.getPopupMenu().setLightWeightPopupEnabled(false);
+        menubar.add(menu);
+
+        // Exit when quit selected
+        JMenuItem resetm = menu.add("Reset");
+        resetm.addActionListener(
+            new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    Parameter.blockAction(true);
+
+                    scene.build();
+                    scene.resetClock();
+                    scene.reset();
+
+                    Parameter.blockAction(false);
+
+                    Parameter.onUserAction();
+                }
+            });
+
+
+        // Exit when quit selected
+        JMenuItem quitm = menu.add("Quit");
+        quitm.addActionListener(
+            new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    System.exit(0);
+                }
+            });
+        
+        // ------------------------------------------------------
+        
+        // Lay out main window
+        GridBagLayout layout = new GridBagLayout();
+        GridBagConstraints con = new GridBagConstraints();
+
+        Container c = getContentPane();
+        c.setLayout(layout);
+
+        // World viewport
+        con.gridwidth = 1;
+        con.weightx = 0.2;
+        con.weighty = 1.0;
+        con.fill = GridBagConstraints.BOTH;
+        // Set insets around viewport
+        // -- Make top inset larger when dumping so menu doesn't overlap
+        // -- window and get in the dumped images
+        con.insets  = new Insets(scene.dumpPrefix == null ? 4 : 80,4,4,2);
+        layout.setConstraints(worldDraw, con);
+        c.add(worldDraw);
+
+        // -- Parameter controls
+
+        // Make container for controls
+        Container cc = new Container();
+
+        con.gridwidth = GridBagConstraints.REMAINDER;
+        con.weightx = 0.2;
+        con.weighty = 1.0;
+        con.fill = GridBagConstraints.HORIZONTAL;
+        
+        layout.setConstraints(cc, con);
+        c.add(cc);
+        
+        // Fill compartment
+        GridBagLayout clayout = new GridBagLayout();
+        cc.setLayout(clayout);
+        GridBagConstraints ccon = new GridBagConstraints();
+
+        ccon.weightx = 1.0;
+        ccon.weighty = 1.0;
+        ccon.anchor = GridBagConstraints.NORTH;
+        ccon.insets = new Insets(10, 10, 0, 10);
+        ccon.fill = GridBagConstraints.BOTH;
+        ccon.gridwidth = GridBagConstraints.REMAINDER;
+        makeControls(cc, clayout, ccon,
+                     scene.getParams(), 
+                     scene.getOptions(), 
+                     "Scene parameters");
+
+        // ------------------------------------------------------
+
+        // Exit when window closes
+        addWindowListener(
+            new WindowAdapter()
+            {
+                public void windowClosing(WindowEvent e)
+                {
+                    System.exit(0);
+                }
+            });
+
+        // Placement of window on screen
+        setLocation(100, 50);
+
+        pack();
+        setVisible(true);
+
+        // Start animation
+        worldDraw.setAnimation(true);
+    }
+    
+    public static void main(String args[])
+    {
+        long seed = -1;
+        double speed = 1;
+        String dumpPrefix = null;
+        boolean nice = false;
+
+        // Parse command-line arguments
+        try {
+            for (int i = 0; i < args.length; i++) {
+                if (args[i].equals("-nice")) {
+                    nice = true;
+                } else if (args[i].equals("-seed")) {
+                    seed = (new Long(args[++i])).longValue();
+                } else if (args[i].equals("-speed")) {
+                    speed = (new Double(args[++i])).floatValue();
+                } else if (args[i].equals("-dump")) {
+                    if (i+1 < args.length && args[i+1].charAt(0) != '-') {
+                        dumpPrefix = args[++i];
+                    } else {
+                        dumpPrefix =
+                          new String("/tmp/" +
+                                     System.getProperty("user.name", "dump") +
+                                     "/image");
+
+                        System.out.println("Using default dump prefix: " +
+                                           dumpPrefix);
+                    }
+                } else {
+                    System.out.println("Usage: java Main [-nice] [-seed #]" +
+                                       " [-speed #] [-dump (prefix)]");
+                    throw new Exception("Illegal argument: " + args[i]);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            System.out.println("---------");
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        // Create main window
+        try {
+            scene = new Scene(seed, nice, speed, dumpPrefix);
+
+            scene.resetClock();
+
+            if (dumpPrefix != null)
+              scene.setFrameByFrameClock();
+
+            Main m = new Main();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+}

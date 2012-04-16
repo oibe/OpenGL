@@ -1,0 +1,54 @@
+[Onwukike Ibe]
+CS 428 - Project 3
+
+Incomplete parts:
+-----------------
+  - [none]
+
+Bugs in code:
+-------------
+  - [none]
+  
+Extensions/extra credit completed:
+----------------------------------
+  - [ BugCam- See world from a bugs perspective.]
+  - [ Following- Little bugs follow parent bugs.]
+  - [ Shadows- All objects except rocks have shadows.]
+  - [ Predator- Have a predator bug that chases main group of bugs. Has a green body and yellow head.]
+  - [ Random Placement- I place objects in scene randomly.]
+  
+  My Own Changes:
+  - [ 2-D Planar Mode: I project the scene on to the z-y plane and move the lightsource parallel, looks like a 2-D game!]
+  - [ 2-D meets 3-D:  I project the scene onto the z-y plane like the previous one except I add on the origial y value of each
+  			object before projection. The result is that as an object moves further from the z-y plane the more 3-D it becomes!
+  			So how 3-D the each object appears, is a function of its distance from the z-y plane.]
+  - [ Expanding Universe:  If the bugs begin to move in different directions then at times the scene will stretch from 2-D to 3-D,
+  			   made me think of how our universe is exanding. =)  ]
+
+================================================================
+
+Methods completed or changed
+----------------------------
+
+Bug.java
+  - keyframe()   I completed the keyframes using interpolation.
+  - transform()  I use matrix transformations on the bug.
+  - bugShadow()  I put the right matrix on the stack to draw a bug shadow.
+  
+Critter.java
+  - integrate()     I use integration formulas to integrate.
+  - accelDrag()     I create accelDrag using formula from class..
+  - accelAttract()  Icreate accelAttraction using a formula from class.
+
+Rock.java
+ - compute()	    I initialize rock values.
+ - computeFractal() I recusively create a rock fractal.
+
+Scene.java
+ - build()	I build the scene randomly each time, and implement "-nice options"
+ - process()	I call the keyframe, and integration methods, as well as the accell methods.
+
+TreePart.java
+  - TreePart()  I use mutual recursion to initialize tree parts, and draw tree parts.
+  - draw()	I draw my tree parts in this function.
+  - treeShadow()I draw my tree and place a projection matrix on the modelview stack to draw shadows.

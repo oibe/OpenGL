@@ -1,0 +1,62 @@
+[ Onwukike Ibe ]
+CS 428 - Project 1
+
+=============================================================================
+This is a template description file.  Please fill in by replacing the []'s
+with relevant content (write a *single* sentence description for each method,
+bug, extension, etc...).  Then, remove any leftover []'s.
+=============================================================================
+
+Incomplete parts:
+-----------------
+  - none
+  
+Bugs in code:
+-------------
+  - none
+
+Extensions/extra credit completed:
+----------------------------------
+  - Clipping Planes combined with drawing the wire cube has been implemented.
+  - The normalization of my viewing volume in my normal view has been implemented.
+  - The aspect ratio preservation has also been implemented.
+
+================================================================
+
+Methods completed or changed:
+-----------------------------
+
+Cube.java:
+- transform()
+  push the modeling transformation on the stack.
+
+CameraView.java:
+- projection()
+  I adjust the aspect ratio and call glFrustum or glOrtho.
+- draw()
+  CameraView transformation, and Modeling transformation are called.  I also called the draw cube function.
+- transformation()
+  I apply glTranslate,glRotate,and glScale operations.
+
+WorldView.java:
+- projection()
+  I adjust the aspect ratio and call glFrustum.
+- draw()
+  I call the ViewVolume draw function,The cube transform, and the cube draw function.  I also enable clipping planes in this function and draw the wireframe.
+- transformation()
+  I apply glTranslate,glRotate,and glScale operations.
+
+ViewVolume.java:
+- draw()
+  Specify the lines to be drawn as well as the points from CameraView.
+- placeClipPlanes()
+  I specfiy all of my calls to placeClipPlane()
+- placeClipPlane()
+  I compute the normal vector of a plane, and the shortest distance to the plane, and I use these values to place my plane.  I also place the clipping planes.
+- enablePlanes
+  I enable all clipping planes
+- disablePlanes
+  I disable all clipping planes
+- reversePlanes
+  I reverse the direction of all the clipping planes
+- 

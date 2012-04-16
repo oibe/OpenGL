@@ -1,0 +1,77 @@
+Description:
+	Use functions to create more realistic things.
+
+Objective:
+	Learn procedural generation and AI bugs.
+
+Program:
+	Lots of placeholder code.
+	Don't feel confined by his structure.
+
+Program Use:
+	-speed 	(value) //run as ratio of speed
+	-seed	(value) //generate the same random numbers given the same seed.
+	-nice		//makes shit look nicer, but more expensive in computation.
+	-dump	(dir)	//specify a directory to create movie of animation.
+	
+Data structures:
+	Implements Obstacle interface: (allows these things to be treated as obstacles to be avoided)
+		Rock-  Represented through rock class, contains location,size, and 2D array of height values.
+		Tree-  contains location of tree, and recursive data structure from TreePart, stores branches and trees as hierarchical model.
+	Non-Obstacle interface:
+		Bug- extends the critter class, so adding new creatures should be easy.  Keyframes for Bug stored in bug class.
+		Critter.keyframe() computes bug parameters given time.  The position, velocity, and acceleration of the bug is 
+		stored in Critter.  In Critter we should compute accelerations and do numerical integration for bug simulations.
+		Scene- class that represents the scene has methods I need to complete.
+
+Requirements:
+	Rock-  	The storage for rock and draw method are already in Rock.  The rock is represented using a polygon mesh, but the x
+		and y values are equally spaced, we need to compute the proper height values, this called height field.
+		Examine:
+			Rock.getRockNormal
+			Rock.getRockPoint
+		Rock.locked - 2D-array if a value in this array is true the corresponding height value, should not be changed in code.
+			      I think I have to implement this.
+		Rock.height - Stores height values of rocks.
+		Rock.computeFractal- don't use random midpoint displacement at first cause of a lot of errors.
+		
+		Work on:  Rock.compute(), Rock.computeFractal(), Scene.build()
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

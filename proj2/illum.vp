@@ -1,0 +1,20 @@
+/*
+ * Illumination vertex shader
+ */
+
+// Send to fragment shader: position and normal (in eye coordinates)
+varying vec4 pos;
+varying vec3 norm;
+
+void main()
+{
+    // To be used in illumination computation    
+    pos  = gl_ModelViewMatrix * gl_Vertex;
+    norm = gl_NormalMatrix    * gl_Normal;
+
+    // Pass position through
+    gl_Position = ftransform();
+
+    // Pass color to the fragment shader
+    gl_FrontColor = gl_Color;
+}

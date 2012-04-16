@@ -1,0 +1,46 @@
+[ Onwukike Ibe]
+CS 428 - Project 2
+
+Incomplete parts:
+-----------------
+  -[none]
+
+Bugs in code:
+-------------
+  -[none]
+
+Extensions/extra credit completed:
+----------------------------------
+  - [ I have implemented the torus with all proper features such as drawing normals, toonshading, etc.]
+  - [ I have called glPolygon offset to change the depth of the polygons so that the wireframe does not have a "flickery" appearance.]
+  - [ I have implemented the phong model see comments in illum.fp the section is labeled "PHONG MODEL COMMENTS"]
+  - [ I implemented a parametrization known as a dini surface and got everything to work for it. Just type "-dini" in the command line arguments and it should come up.] 
+  - [ I drew all the normals for models and parametrized shapes.]
+
+================================================================
+
+Methods completed or changed (Java and GLSL)
+--------------------------------------------
+
+Ellipsoid.java
+- evalPosition(): I COMPLETED THIS METHOD.
+- evalNormal():   I COMPLETED THIS METHOD.
+
+ellipsoid.vp (GLSL)
+- ellipsoidPosition(): I COMPLETED THIS METHOD.
+- ellipsoidNormal():   I COMPLETED THIS METHOD.
+- main()
+
+illum.fp (GLSL)
+- toonShade()	I COMPLETED THIS METHOD.
+- main()	I COMPLETED THIS METHOD.
+
+PolyMesh.java
+- computeAllNormals(): I COMPLETED THIS METHOD.
+
+Shape.java
+- draw():		I COMPLETED THIS METHOD.
+- drawPolygons():	I COMPLETED THIS METHOD.
+- drawWireframe():	I COMPLETED THIS METHOD.
+- drawSil():		This is the helper method I created in order to draw silhouettes.
+

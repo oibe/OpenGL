@@ -1,0 +1,284 @@
+#
+# An unexpected error has been detected by HotSpot Virtual Machine:
+#
+#  SIGSEGV (0xb) at pc=0x03ab1e0c, pid=18051, tid=3086448848
+#
+# Java VM: Java HotSpot(TM) Server VM (1.5.0_22-b03 mixed mode)
+# Problematic frame:
+# C  [libGL.so.1+0x84e0c]  XF86DRIQueryExtension+0x8e
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x08ffdb48):  JavaThread "main" [_thread_in_native, id=18051]
+
+siginfo:si_signo=11, si_errno=0, si_code=1, si_addr=0x00000004
+
+Registers:
+EAX=0x00000041, EBX=0x6eb1de88, ECX=0x6eb13228, EDX=0x00000000
+ESP=0xbfaf101c, EBP=0x6eb038c8, ESI=0x00000000, EDI=0x00000001
+EIP=0x03ab1e0c, CR2=0x00000004, EFLAGS=0x00210202
+
+Top of Stack: (sp=0xbfaf101c)
+0xbfaf101c:   00000000 00000000 00000018 6eb00040
+0xbfaf102c:   00000000 bfaf30c4 00000000 00b86dd9
+0xbfaf103c:   6eb08150 00000001 6eb038c8 00002000
+0xbfaf104c:   6eb1de2c 03aaf470 6eb038c8 bfaf1098
+0xbfaf105c:   bfaf109c 00000003 00000001 6eb18210
+0xbfaf106c:   6eb038c8 00ad9ff4 6eb00010 bfaf30c4
+0xbfaf107c:   6eb1de10 009f0cb7 6eb1de10 009b04d5
+0xbfaf108c:   03ae090c 00adb140 6eb1f680 494c2840 
+
+Instructions: (pc=0x03ab1e0c)
+0x03ab1dfc:   00 66 89 79 02 83 45 6c 04 83 45 60 01 8b 76 08
+0x03ab1e0c:   0f b6 56 04 88 11 88 41 01 33 c9 8d 04 24 51 51 
+
+Stack: [0xbf8f7000,0xbfaf7000),  sp=0xbfaf101c,  free space=2024k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libGL.so.1+0x84e0c]  XF86DRIQueryExtension+0x8e
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  com.sun.opengl.impl.x11.GLX.glXChooseVisual1(JILjava/lang/Object;I)Ljava/nio/ByteBuffer;+0
+j  com.sun.opengl.impl.x11.GLX.glXChooseVisual(JI[II)Lcom/sun/opengl/impl/x11/XVisualInfo;+61
+j  com.sun.opengl.impl.x11.X11GLDrawableFactory.chooseGraphicsConfiguration(Ljavax/media/opengl/GLCapabilities;Ljavax/media/opengl/GLCapabilitiesChooser;Ljavax/media/opengl/AbstractGraphicsDevice;)Ljavax/media/opengl/AbstractGraphicsConfiguration;+139
+j  javax.media.opengl.GLCanvas.chooseGraphicsConfiguration(Ljavax/media/opengl/GLCapabilities;Ljavax/media/opengl/GLCapabilitiesChooser;Ljava/awt/GraphicsDevice;)Ljava/awt/GraphicsConfiguration;+21
+j  javax.media.opengl.GLCanvas.<init>(Ljavax/media/opengl/GLCapabilities;Ljavax/media/opengl/GLCapabilitiesChooser;Ljavax/media/opengl/GLContext;Ljava/awt/GraphicsDevice;)V+102
+j  javax.media.opengl.GLCanvas.<init>(Ljavax/media/opengl/GLCapabilities;)V+5
+j  javax.media.opengl.GLCanvas.<init>()V+2
+j  SimpleGLCanvas.<init>(Ljava/awt/Window;)V+1
+j  WorldView.<init>(Ljava/awt/Window;LScene;)V+2
+j  Main.<init>()V+21
+j  Main.main([Ljava/lang/String;)V+355
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x09230e60 JavaThread "AWT-XAWT" daemon [_thread_blocked, id=18071]
+  0x0920dfa8 JavaThread "Java2D Disposer" daemon [_thread_blocked, id=18070]
+  0x090ebb40 JavaThread "Low Memory Detector" daemon [_thread_blocked, id=18068]
+  0x090ea6c0 JavaThread "CompilerThread1" daemon [_thread_blocked, id=18067]
+  0x090e9668 JavaThread "CompilerThread0" daemon [_thread_blocked, id=18066]
+  0x090e8540 JavaThread "AdapterThread" daemon [_thread_blocked, id=18065]
+  0x090e76f8 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=18064]
+  0x090dce08 JavaThread "Finalizer" daemon [_thread_blocked, id=18063]
+  0x090dc8e0 JavaThread "Reference Handler" daemon [_thread_blocked, id=18062]
+=>0x08ffdb48 JavaThread "main" [_thread_in_native, id=18051]
+
+Other Threads:
+  0x090da3a8 VMThread [id=18061]
+  0x0900ed18 WatcherThread [id=18069]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ PSYoungGen      total 6144K, used 2450K [0xaa770000, 0xaae40000, 0xb1480000)
+  eden space 5312K, 46% used [0xaa770000,0xaa9d4a48,0xaaca0000)
+  from space 832K, 0% used [0xaad70000,0xaad70000,0xaae40000)
+  to   space 832K, 0% used [0xaaca0000,0xaaca0000,0xaad70000)
+ PSOldGen        total 55808K, used 0K [0x73e80000, 0x77500000, 0xaa770000)
+  object space 55808K, 0% used [0x73e80000,0x73e80000,0x77500000)
+ PSPermGen       total 16384K, used 5140K [0x6fe80000, 0x70e80000, 0x73e80000)
+  object space 16384K, 31% used [0x6fe80000,0x703853e0,0x70e80000)
+
+Dynamic libraries:
+00896000-008ab000 r-xp 00000000 08:07 149001     /lib/libnsl-2.5.so
+008ab000-008ac000 r-xp 00014000 08:07 149001     /lib/libnsl-2.5.so
+008ac000-008ad000 rwxp 00015000 08:07 149001     /lib/libnsl-2.5.so
+008ad000-008af000 rwxp 008ad000 00:00 0 
+00966000-00981000 r-xp 00000000 08:07 147612     /lib/ld-2.5.so
+00981000-00982000 r-xp 0001a000 08:07 147612     /lib/ld-2.5.so
+00982000-00983000 rwxp 0001b000 08:07 147612     /lib/ld-2.5.so
+00985000-00ad8000 r-xp 00000000 08:07 147634     /lib/libc-2.5.so
+00ad8000-00ada000 r-xp 00152000 08:07 147634     /lib/libc-2.5.so
+00ada000-00adb000 rwxp 00154000 08:07 147634     /lib/libc-2.5.so
+00adb000-00ade000 rwxp 00adb000 00:00 0 
+00ae0000-00b07000 r-xp 00000000 08:07 148480     /lib/libm-2.5.so
+00b07000-00b08000 r-xp 00026000 08:07 148480     /lib/libm-2.5.so
+00b08000-00b09000 rwxp 00027000 08:07 148480     /lib/libm-2.5.so
+00b0b000-00b0e000 r-xp 00000000 08:07 148478     /lib/libdl-2.5.so
+00b0e000-00b0f000 r-xp 00002000 08:07 148478     /lib/libdl-2.5.so
+00b0f000-00b10000 rwxp 00003000 08:07 148478     /lib/libdl-2.5.so
+00b12000-00b27000 r-xp 00000000 08:07 148407     /lib/libpthread-2.5.so
+00b27000-00b28000 r-xp 00015000 08:07 148407     /lib/libpthread-2.5.so
+00b28000-00b29000 rwxp 00016000 08:07 148407     /lib/libpthread-2.5.so
+00b29000-00b2b000 rwxp 00b29000 00:00 0 
+00b42000-00b44000 r-xp 00000000 08:02 4211901    /usr/lib/libXau.so.6.0.0
+00b44000-00b45000 rwxp 00001000 08:02 4211901    /usr/lib/libXau.so.6.0.0
+00b47000-00c46000 r-xp 00000000 08:02 4211903    /usr/lib/libX11.so.6.2.0
+00c46000-00c4a000 rwxp 000ff000 08:02 4211903    /usr/lib/libX11.so.6.2.0
+00c4c000-00c51000 r-xp 00000000 08:02 4211902    /usr/lib/libXdmcp.so.6.0.0
+00c51000-00c52000 rwxp 00004000 08:02 4211902    /usr/lib/libXdmcp.so.6.0.0
+00c54000-00c63000 r-xp 00000000 08:02 4211919    /usr/lib/libXext.so.6.4.0
+00c63000-00c64000 rwxp 0000e000 08:02 4211919    /usr/lib/libXext.so.6.4.0
+00d64000-00d6c000 r-xp 00000000 08:02 4211904    /usr/lib/libXrender.so.1.3.0
+00d6c000-00d6d000 rwxp 00007000 08:02 4211904    /usr/lib/libXrender.so.1.3.0
+00d75000-00d7e000 r-xp 00000000 08:02 4212000    /usr/lib/libXcursor.so.1.0.2
+00d7e000-00d7f000 rwxp 00008000 08:02 4212000    /usr/lib/libXcursor.so.1.0.2
+00d81000-00d85000 r-xp 00000000 08:02 4211985    /usr/lib/libXfixes.so.3.1.0
+00d85000-00d86000 rwxp 00003000 08:02 4211985    /usr/lib/libXfixes.so.3.1.0
+00d98000-00da3000 r-xp 00000000 08:07 148487     /lib/libgcc_s-4.1.2-20080825.so.1
+00da3000-00da4000 rwxp 0000a000 08:07 148487     /lib/libgcc_s-4.1.2-20080825.so.1
+03a2d000-03af9000 r-xp 00000000 08:02 4212400    /usr/lib/libGL.fgl.so.1.2
+03af9000-03b04000 rwxp 000cb000 08:02 4212400    /usr/lib/libGL.fgl.so.1.2
+03b04000-03b09000 rwxp 03b04000 00:00 0 
+03b0b000-03b12000 r-xp 00000000 08:02 4211592    /usr/lib/libatiuki.so.1.0
+03b12000-03b13000 rwxp 00006000 08:02 4211592    /usr/lib/libatiuki.so.1.0
+04034000-04038000 r-xp 00000000 08:02 4212448    /usr/lib/libXxf86vm.so.1.0.0
+04038000-04039000 rwxp 00003000 08:02 4212448    /usr/lib/libXxf86vm.so.1.0.0
+08048000-08057000 r-xp 00000000 08:02 1229887    /usr/local/java-archive/jdk1.5.0gl_22/bin/java
+08057000-08059000 rwxp 0000e000 08:02 1229887    /usr/local/java-archive/jdk1.5.0gl_22/bin/java
+08ffa000-0926e000 rwxp 08ffa000 00:00 0          [heap]
+6ea24000-6eaff000 r-xp 00000000 08:02 1262393    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/ext/libjogl.so
+6eaff000-6eb00000 rwxp 000da000 08:02 1262393    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/ext/libjogl.so
+6eb00000-6eb32000 rwxp 6eb00000 00:00 0 
+6eb32000-6ec00000 ---p 6eb32000 00:00 0 
+6ec52000-6ec55000 ---p 6ec52000 00:00 0 
+6ec55000-6ecd3000 rwxp 6ec55000 00:00 0 
+6ecd3000-6ecd6000 ---p 6ecd3000 00:00 0 
+6ecd6000-6ed54000 rwxp 6ecd6000 00:00 0 
+6ed54000-6edce000 r-xp 00000000 08:02 1262456    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/libfontmanager.so
+6edce000-6edd8000 rwxp 0007a000 08:02 1262456    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/libfontmanager.so
+6edd8000-6eddc000 rwxp 6edd8000 00:00 0 
+6eddc000-6ee11000 r-xs 00000000 08:05 245767     /var/db/nscd/hosts
+6ee11000-6ee5d000 r-xs 00000000 00:1f 21723867   /.autofs/ilab/ilab_users/pborosan/428/lib/vecmath.jar
+6ee5d000-6ee8b000 r-xp 00000000 08:02 1262488    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/xawt/libmawt.so
+6ee8b000-6ee8f000 rwxp 0002d000 08:02 1262488    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/xawt/libmawt.so
+6ee8f000-6ef55000 r-xp 00000000 08:02 1262474    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/libmlib_image.so
+6ef55000-6ef56000 rwxp 000c5000 08:02 1262474    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/libmlib_image.so
+6ef56000-6efb5000 r-xp 00000000 08:02 1262451    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/libawt.so
+6efb5000-6efbb000 rwxp 0005f000 08:02 1262451    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/libawt.so
+6efbb000-6efdf000 rwxp 6efbb000 00:00 0 
+6efdf000-6efe2000 r-xs 00000000 08:02 1262389    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/ext/dnsns.jar
+6efe2000-6efe7000 r-xs 00000000 08:02 1262390    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/ext/gluegen-rt.jar
+6efe7000-6f0ad000 r-xs 00000000 08:02 1262396    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/ext/localedata.jar
+6f0ad000-6f0d4000 r-xs 00000000 08:02 1262397    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/ext/sunjce_provider.jar
+6f0d4000-6f1e7000 r-xs 00000000 08:02 1262391    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/ext/jogl.jar
+6f1e7000-6f212000 r-xs 00000000 08:02 1262398    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/ext/sunpkcs11.jar
+6f212000-6f213000 ---p 6f212000 00:00 0 
+6f213000-6f293000 rwxp 6f213000 00:00 0 
+6f293000-6f296000 ---p 6f293000 00:00 0 
+6f296000-6f314000 rwxp 6f296000 00:00 0 
+6f314000-6f317000 ---p 6f314000 00:00 0 
+6f317000-6f395000 rwxp 6f317000 00:00 0 
+6f395000-6f398000 ---p 6f395000 00:00 0 
+6f398000-6f416000 rwxp 6f398000 00:00 0 
+6f416000-6f419000 ---p 6f416000 00:00 0 
+6f419000-6f497000 rwxp 6f419000 00:00 0 
+6f497000-6f49a000 ---p 6f497000 00:00 0 
+6f49a000-6f518000 rwxp 6f49a000 00:00 0 
+6f518000-6f718000 r-xp 00000000 08:02 4538918    /usr/lib/locale/locale-archive
+6f718000-6f71b000 ---p 6f718000 00:00 0 
+6f71b000-6f799000 rwxp 6f71b000 00:00 0 
+6f799000-6f79c000 ---p 6f799000 00:00 0 
+6f79c000-6f81a000 rwxp 6f79c000 00:00 0 
+6f81a000-6f81b000 ---p 6f81a000 00:00 0 
+6f81b000-6f89b000 rwxp 6f81b000 00:00 0 
+6f89b000-6f89c000 ---p 6f89b000 00:00 0 
+6f89c000-6f91c000 rwxp 6f89c000 00:00 0 
+6f91c000-6f91d000 ---p 6f91c000 00:00 0 
+6f91d000-6f99d000 rwxp 6f91d000 00:00 0 
+6f99d000-6f99e000 ---p 6f99d000 00:00 0 
+6f99e000-6fa1e000 rwxp 6f99e000 00:00 0 
+6fa1e000-6fa1f000 ---p 6fa1e000 00:00 0 
+6fa1f000-6faa7000 rwxp 6fa1f000 00:00 0 
+6faa7000-6fabf000 rwxp 6faa7000 00:00 0 
+6fabf000-6fadb000 rwxp 6fabf000 00:00 0 
+6fadb000-6fc74000 rwxp 6fadb000 00:00 0 
+6fc74000-6fc7c000 rwxp 6fc74000 00:00 0 
+6fc7c000-6fc94000 rwxp 6fc7c000 00:00 0 
+6fc94000-6fcb0000 rwxp 6fc94000 00:00 0 
+6fcb0000-6fe48000 rwxp 6fcb0000 00:00 0 
+6fe48000-6fe4c000 rwxp 6fe48000 00:00 0 
+6fe4c000-6fe7f000 rwxp 6fe4c000 00:00 0 
+6fe7f000-70e80000 rwxp 6fe7f000 00:00 0 
+70e80000-73e80000 rwxp 70e80000 00:00 0 
+73e80000-77500000 rwxp 73e80000 00:00 0 
+77500000-aa770000 rwxp 77500000 00:00 0 
+aa770000-aae40000 rwxp aa770000 00:00 0 
+aae40000-b1480000 rwxp aae40000 00:00 0 
+b1487000-b1488000 r-xp 00000000 08:02 1262394    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/ext/libjogl_awt.so
+b1488000-b1489000 rwxp 00000000 08:02 1262394    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/ext/libjogl_awt.so
+b1489000-b1492000 rwxp b1489000 00:00 0 
+b1492000-b1549000 rwxp b1492000 00:00 0 
+b1549000-b1789000 rwxp b1549000 00:00 0 
+b1789000-b4549000 rwxp b1789000 00:00 0 
+b4549000-b4dc6000 r-xs 00000000 08:02 1262379    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/charsets.jar
+b4dc6000-b4ddb000 r-xs 00000000 08:02 1262432    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/jce.jar
+b4ddb000-b4e60000 r-xs 00000000 08:02 1262433    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/jsse.jar
+b4e60000-b4eca000 rwxp b4e60000 00:00 0 
+b4eca000-b7529000 r-xs 00000000 08:02 1262440    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/rt.jar
+b7529000-b7538000 r-xp 00000000 08:02 1262482    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/libzip.so
+b7538000-b753a000 rwxp 0000e000 08:02 1262482    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/libzip.so
+b753a000-b755b000 r-xp 00000000 08:02 1262462    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/libjava.so
+b755b000-b755d000 rwxp 00020000 08:02 1262462    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/libjava.so
+b755d000-b7592000 r-xs 00000000 08:05 245765     /var/db/nscd/passwd
+b7592000-b7afc000 r-xp 00000000 08:02 1262487    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/server/libjvm.so
+b7afc000-b7b60000 rwxp 00569000 08:02 1262487    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/server/libjvm.so
+b7b60000-b7f78000 rwxp b7b60000 00:00 0 
+b7f78000-b7f79000 r-xp 00000000 08:02 1262467    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/libjawt.so
+b7f79000-b7f7a000 rwxp 00000000 08:02 1262467    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/libjawt.so
+b7f7a000-b7f7b000 r-xp 00000000 08:02 1262392    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/ext/libgluegen-rt.so
+b7f7b000-b7f7c000 rwxp 00000000 08:02 1262392    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/ext/libgluegen-rt.so
+b7f7c000-b7f7d000 r-xp 00338000 08:02 4538918    /usr/lib/locale/locale-archive
+b7f7d000-b7f88000 r-xp 00000000 08:02 1262481    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/libverify.so
+b7f88000-b7f89000 rwxp 0000b000 08:02 1262481    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/libverify.so
+b7f89000-b7f91000 rwxs 00000000 08:03 131079     /tmp/hsperfdata_oibe/18051
+b7f91000-b7f97000 r-xp 00000000 08:02 1262484    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/native_threads/libhpi.so
+b7f97000-b7f98000 rwxp 00006000 08:02 1262484    /usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/native_threads/libhpi.so
+b7f98000-b7f99000 rwxp b7f98000 00:00 0 
+b7f99000-b7f9a000 r-xp b7f99000 00:00 0 
+b7f9a000-b7f9b000 rwxp b7f9a000 00:00 0 
+b7f9b000-b7f9c000 r-xp b7f9b000 00:00 0          [vdso]
+bf8f7000-bf8fa000 ---p bf8f7000 00:00 0 
+bf8fa000-bfaf7000 rwxp bfe02000 00:00 0          [stack]
+
+VM Arguments:
+java_command: Main
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=/usr/local/java1.5.0gl
+CLASSPATH=:.:/ilab/users/pborosan/428/lib/vecmath.jar
+PATH=/usr/local/java1.5.0gl/bin:/usr/lib/qt-3.3/bin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin
+LD_LIBRARY_PATH=/usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386/server:/usr/local/java-archive/jdk1.5.0gl_22/jre/lib/i386:/usr/local/java-archive/jdk1.5.0gl_22/jre/../lib/i386
+SHELL=/bin/tcsh
+DISPLAY=localhost:10.0
+HOSTTYPE=i386-linux
+OSTYPE=linux
+MACHTYPE=i386
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0x517630], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGBUS: [libjvm.so+0x517630], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGFPE: [libjvm.so+0x43a430], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGPIPE: [libjvm.so+0x43a430], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGILL: [libjvm.so+0x43a430], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGUSR1: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGUSR2: [libjvm.so+0x43c880], sa_mask[0]=0x00000000, sa_flags=0x10000004
+SIGHUP: [libjvm.so+0x43c2b0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGINT: [libjvm.so+0x43c2b0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGQUIT: [libjvm.so+0x43c2b0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGTERM: [libjvm.so+0x43c2b0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+
+
+---------------  S Y S T E M  ---------------
+
+OS:CentOS release 5.5 (Final)
+
+uname:Linux 2.6.18-194.8.1.el5PAE #1 SMP Thu Jul 1 19:46:23 EDT 2010 i686
+libc:glibc 2.5 NPTL 2.5 
+rlimit: STACK 10240k, CORE 0k, NPROC 75776, NOFILE 1024, AS infinity
+load average:0.04 0.04 0.02
+
+CPU:total 4 (cores per cpu 4, threads per core 1) family 6 model 7 stepping 10, cmov, cx8, fxsr, mmx, sse, sse2
+
+Memory: 4k page, physical 4017944k(1313492k free), swap 1023k(1023k free)
+
+vm_info: Java HotSpot(TM) Server VM (1.5.0_22-b03) for linux-x86, built on Oct  9 2009 01:43:39 by java_re with gcc 3.2.1-7a (J2SE release)
+
+time: Wed Nov 17 15:47:56 2010
+elapsed time: 1 seconds
+

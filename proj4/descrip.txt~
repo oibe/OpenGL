@@ -1,0 +1,33 @@
+Onwukike Ibe
+CS 428 - Project 4
+
+Incomplete parts:
+-----------------
+  - NONE!!!!!!!!!!! HAHAHAHAHAHAHA!!!!!!
+
+Bugs in code:
+-------------
+  - NONE!!!!!!!!! HAHAHAHAHAHAHAHA!!!!!!!
+
+Extensions/extra credit completed:
+----------------------------------
+  - Anti-aliasing: Smears object edges and makes them look smoother.
+
+================================================================
+
+Methods completed or changed
+----------------------------
+
+Camera.java
+- pixelRay():I compute the direction vector for a ray as well as the origin point for a ray using uX+vY-nNear formula in comments.
+
+Scene.java
+- castRay(): Cast refraction, lighting, and reflection rays into scene.
+- intersects():  Determine the closest intersecting point for a light ray.
+- shadowRay():  Calls either ShadowTint or ShadowTintDirectional based off of which lightsource is initialized.
+- shadowTint():
+
+Light.java
+- compute():
+
+[ ... add any other methods you create/modify ... ]

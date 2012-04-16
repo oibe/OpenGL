@@ -1,0 +1,411 @@
+/* class Scene
+ * Provides the structure for what is in the scene, and contains classes
+ * for their rendering
+ *
+ * Doug DeCarlo
+ */
+import java.util.*;
+import java.text.ParseException;
+import java.lang.reflect.*;
+import java.io.*;
+import javax.vecmath.*;
+
+class Scene
+{
+    // Scene elements
+    VectorHierarchy<Shape>    objects    = new VectorHierarchy<Shape>();
+    Vector<Light>    lights     = new Vector<Light>();
+    Vector<Material> materials  = new Vector<Material>();
+    Camera      camera     = null;
+    MatrixStack MStack     = new MatrixStack();
+
+    RGBImage    image      = null;
+
+    // ------
+    
+    // Current insertion point in hierarchy for parser
+    VectorHierarchy<Shape> currentLevel;
+
+    // Hierarchy enable (if off, "up" and "down" have no effect)
+    // (Use this if you implement hierarchical object management or CSG)
+    // (if you turn this on, you'll need to re-write intersects() and 
+    // shadowTint() recursively for it to see the child objects!)
+    boolean hierarchyOn    = true;
+    
+    // ------
+
+    // Maximum recursion depth for a ray
+    double recursionDepth  = 3;
+    
+    // Minimum t value in intersection computations
+    double epsilon         = 1e-5;
+    
+    // Constructor
+    public Scene()
+        throws ParseException, IOException, NoSuchMethodException,
+        ClassNotFoundException,IllegalAccessException,
+        InvocationTargetException
+    {
+        // Set hierarchy at top level
+        currentLevel = objects;
+
+        // Add default material
+        materials.addElement(new Material("default"));
+    }
+
+    //-----------------------------------------------------------------------
+
+    /** render an image of size width X height */
+    public RGBImage render(int width, int height, boolean verbose)
+        throws ParseException, IOException, NoSuchMethodException,
+        ClassNotFoundException,IllegalAccessException,
+        InvocationTargetException
+    {
+        // Set up camera for this image resolution
+        camera.setup(width, height);
+
+        // Make a new image
+        image = new RGBImage(width, height);
+
+        // Ray trace every pixel -- the main loop
+        for (int i = 0; i < image.getWidth(); i++) {
+            if (verbose)
+              System.out.print("Rendering " +
+                               (int)(100.0*i/(image.getWidth()-1)) + "%\r");
+
+            for (int j = 0; j < image.getHeight(); j++) {
+                // Compute (x,y) coordinates of pixel in [-1, 1]
+                double x = ((double)i)/(image.getWidth()  - 1) * 2 - 1;
+                double y = ((double)j)/(image.getHeight() - 1) * 2 - 1;
+	       	
+	       	double right = ((double)i+.25)/(image.getWidth()  - 1) * 2 - 1;
+                double top = ((double)j+.25)/(image.getHeight() - 1) * 2 - 1;
+		double bottom =((double)j-.25)/(image.getHeight() - 1) * 2 - 1;
+	       	double left = ((double)i-.25)/(image.getWidth()  - 1) * 2 - 1;
+	       	
+                // Compute ray at pixel (x,y)
+                Ray r = camera.pixelRay(x, y);
+	       	Ray r1 = camera.pixelRay(right,top);
+	       	Ray r2 = camera.pixelRay(left,top);
+	       	Ray r3 = camera.pixelRay(left,bottom);
+	       	Ray r4 = camera.pixelRay(right,bottom);
+                // Compute resulting color at pixel (x,y)
+                Vector3d color = castRay(r, 0);
+	       	Vector3d color1 = castRay(r1, 0);
+	      	Vector3d color2 = castRay(r2, 0);
+	       	Vector3d color3 = castRay(r3, 0);
+	       	Vector3d color4 = castRay(r4, 0);
+                // Set color in image
+               color.x = color.x+color1.x+color2.x+color3.x+color4.x;
+                color.y = color.y+color1.y+color2.y+color3.y+color4.y;
+                color.z = color.z+color1.z+color2.z+color3.z+color4.z;
+                color.scale(.2);
+
+                image.setPixel(i,j, color);
+            }
+        }
+
+        if (verbose) {
+            System.out.println();
+            System.out.println("Done!");
+        }
+
+        return image;
+    }
+
+    /** compute pixel color for ray tracing computation for ray r
+     *  (at a recursion depth)
+     */
+	private Vector3d castRay(Ray r, int depth)
+    	{
+       	 	Vector3d color = new Vector3d(0.0,0.0,0.0);
+        	ISect isect = new ISect();
+        	Vector3d norm = isect.getNormal();
+        	boolean check = false;
+        	// Check if ray hit any object (or recursion depth was exceeded)
+        	if (depth <= recursionDepth && intersects(r, isect)) 
+        	{
+            		// -- Ray hit object as specified in isect
+            		Material mat = isect.getHitObject().getMaterialRef();
+            		Vector3d ks = mat.getKs();
+        		Vector3d kt = mat.getKt();
+            		Vector3d Ri = new Vector3d();
+            		
+            		
+            		//COMPUTE REFLECTION*KS
+			Vector3d rayDir = r.getDirection();
+			
+         		Tools.reflect(Ri,r.getDirection(),norm);
+            		Ri.scale(-1.0);
+            		//ADD REFLECTION*KS TO COLOR
+         		Ray refR = new Ray(isect.getHitPoint(),Ri);
+         		refR.getDirection().normalize();
+         		Vector3d Ireflect = castRay(refR,depth+1);
+         		Tools.termwiseMul3d(Ireflect,ks);
+			color.add(Ireflect);
+            		
+            		
+            		//COMPUTE REFRACTON*KT
+				
+				Vector3d Refraction = new Vector3d();
+				double rayDot = rayDir.dot(norm);
+					if(rayDot < 0)
+					{
+						
+						check = Tools.refract(Refraction, rayDir, norm,1.0, mat.getIndex());
+					}
+					else
+					{
+						norm.scale(-1);
+						check = Tools.refract(Refraction, rayDir, norm,mat.getIndex(),1.0);
+					}
+				
+				if(check)
+				{
+					//ADD REFRACTION*KT TO COLOR
+					Ray refracR = new Ray(isect.getHitPoint(),Refraction);
+					refracR.getDirection().normalize();
+					Vector3d Irefract =castRay(refracR,depth+1);
+					Tools.termwiseMul3d(Irefract,kt);
+					color.add(Irefract);
+				}
+				
+            		
+            		for(Light currentLight:lights)
+        		{
+        			//GET MATERIAL PROPERTIES
+        			Vector3d tint = shadowRay(isect, currentLight);
+        		
+        			//DETERMINE LIGHTING TYPE
+        			Vector3d li = null;
+        			if(currentLight.isDirectional())
+        			{
+        				li = currentLight.getDirection();
+        			}
+        			else
+        			{	
+        				li = new Vector3d(currentLight.getPosition());
+        				li.sub(isect.getHitPoint());
+        			}
+        		
+        			//ADD LIGHTING TO COLOR
+        			Vector3d I = currentLight.compute(isect,tint,r);
+				color.add(I);
+
+
+			}
+       
+       	 	}
+
+        return color;
+    }
+
+    /** determine the closest intersecting object along ray r (if any) 
+     *  and its intersection point
+     */
+    private boolean intersects(Ray r, ISect intersection)
+    {
+        // For each object
+        Enumeration e = objects.elements();
+        ISect tempInter = new ISect();
+        intersection.setT(Double.MAX_VALUE);
+        Matrix4d invM = null;
+
+	Shape chosen = null;
+        
+        while (e.hasMoreElements()) 
+        {
+            	Shape current = (Shape)e.nextElement();
+		Ray newR = new Ray(r);
+		invM = current.getInvMatrix();
+		invM.transform(newR.origin);
+		invM.transform(newR.direction);
+	
+         	boolean check = current.hit(newR,tempInter,true,epsilon);
+
+		if(check)
+		{			
+			if( intersection.getT() > tempInter.getT())
+			{
+				intersection.set(tempInter);
+			}
+		}
+
+        }
+	
+	
+	if (intersection.getHitObject() != null) 
+	{
+            	//Transform intersection and hit point into world space.
+            	Matrix4d inverseTranspose = intersection.getHitObject().getInvTMatrix();
+            	Matrix4d ma = intersection.getHitObject().getMatrix();
+            	ma.transform(intersection.getHitPoint());
+		inverseTranspose.transform(intersection.getNormal());
+		intersection.getNormal().normalize();
+		
+		return true;
+        }
+
+        return false;
+    }
+
+    /** compute the amount of unblocked color that is let through to
+     *  a given intersection, for a particular light
+     *
+     *  If the light is entirely blocked, return (0,0,0), not blocked at all
+     *  return (1,1,1), and partially blocked return the product of Kt's
+     *  (from transparent objects)
+     */
+    Vector3d shadowRay(ISect intersection, Light light)
+    {
+        // ...
+
+        // Compute shadow ray and call shadowTint() or shadowTintDirectional()
+	Point3d p = intersection.getHitPoint();
+	
+	
+	//if null dir or light
+	Vector3d dir = null;
+	Ray r = null;
+	if(light.getPosition() == null)
+	{
+		dir = light.getDirection();
+
+	}
+	else
+	{
+		dir = new Vector3d(light.getPosition());
+		dir.sub(new Vector3d(p));
+		
+	}
+	double length = dir.length();
+	dir.normalize();
+	r = new Ray(p,dir);
+     
+		if(!light.isDirectional())
+		{
+
+        		return shadowTint(r,length);
+		}
+		else
+		{
+			return shadowTintDirectional(r);
+		}
+
+        // Placeholder (not blocked)
+        //return new Vector3d(1,1,1);
+    }
+
+    /** determine how the light is tinted along a particular ray which
+     *  has no maximum distance (i.e. from a directional light)
+     */
+    private Vector3d shadowTintDirectional(Ray r)
+    {
+    
+        return shadowTint(r, Double.MAX_VALUE);
+    }
+
+    /** determine how the light is tinted along a particular ray, not
+     *  considering intersections further than maxT
+     */
+    private Vector3d shadowTint(Ray r, double maxT)
+    {
+        Vector3d tint = new Vector3d(1.0, 1.0, 1.0);
+	Matrix4d inv = null;
+        // ...
+	ISect tempInter = new ISect();
+        // For each object
+        Enumeration e = objects.elements();
+        while (e.hasMoreElements()) {
+            Shape current = (Shape)e.nextElement();
+		Ray newR = new Ray(r);
+		inv = current.getInvMatrix();
+		inv.transform(newR.getDirection());
+		inv.transform(newR.getPoint());
+            boolean check = current.hit(newR,tempInter,false,epsilon);
+           if(tempInter.getT() < maxT){
+           if(check)
+           {
+            	Material mat = current.getMaterialRef();
+            	Tools.termwiseMul3d(tint,mat.getKt());
+           }
+	}
+            // ... find product of Kt values that intersect this ray
+        }
+
+	
+        return tint;
+    }
+
+    //------------------------------------------------------------------------
+
+    /** Fetch a material by name */
+    Material getMaterial(String name)
+    {
+        // Unspecified material gets default
+        if (name == null || name.length() == 0)
+          name = new String("default");
+
+        // Find the material with this name
+        for (int i = 0; i < materials.size(); i++){
+            Material mat = (Material)materials.elementAt(i);
+
+            if (mat.getName().compareTo(name) == 0) {
+                return mat;
+            }
+        }
+
+        throw new RuntimeException("Undefined material " + name);
+    }
+
+    /** Add a new scene element */
+    public void addObject(RaytracerObject newItem)
+    {
+        if (newItem instanceof Light) {
+            Light l = (Light)newItem;
+
+            l.transform(MStack.peek());
+
+            lights.addElement(l);
+        } else if (newItem instanceof Material) {
+            Material m = (Material)newItem;
+
+            materials.addElement(m);
+        } else if (newItem instanceof Shape) {
+            Shape s = (Shape)newItem;
+
+            s.parent = currentLevel;
+            s.setMaterialRef(getMaterial(s.getMaterialName()));
+            s.setMatrix(MStack.peek());
+
+            currentLevel.addElement(s);
+        }
+        else if (newItem instanceof Camera){
+            camera = (Camera)newItem;
+        }
+    }
+
+    /** Set up the scene (called after the scene file is read in) */
+    public void setup()
+        throws ParseException, IOException, NoSuchMethodException,
+        ClassNotFoundException,IllegalAccessException,
+        InvocationTargetException
+    {
+        // Specify default camera if none specified in scene file
+        if (camera == null)
+          camera = new Camera();
+
+        // Set up materials
+        for (int i = 0; i < materials.size(); i++){
+            Material mat = (Material)materials.elementAt(i);
+            mat.setup(Trace.verbose);
+        }
+    }
+
+    //-------------------------------------------------------------------------
+
+    // accessors
+    public RGBImage getImage() { return image; }
+    public void setImage(RGBImage newImage) { image = newImage; }
+    public MatrixStack getMStack()  { return MStack; }
+}

@@ -1,0 +1,137 @@
+Running the program:
+----------------------------------------------------
+
+ Usage: java Trace <scenefile> [-res <x> <y>] [-out <output.ppm>] [-quiet]
+
+Specify the image resolution with "-res", and the output file with
+"-out".  The defaults are 128x128, and "out.ppm".  The files are in
+PPM format.  Use "xview" to view them.
+
+Scene format:
+----------------------------------------------------
+
+# comments start with a pound sign, and go to the end of the line
+# (Note: you cannot split up a vector (x,y,z) with a comment)
+#
+# it is not mandatory to specify all the fields of an object. Most of them
+# have default values
+#
+# Vectors can be specified with or without commas.
+
+camera {
+   # the position of the camera (defaults to the origin)
+   eye  = (eye_x, eye_y, eye_z)
+   # look direction  (defaults to -Z)
+   look = (look_x, look_y, look_z)
+   # up direction  (defaults to Y)
+   up   = (up_x, up_y, up_z)
+
+   # vertical field of view (degrees); defaults to 50 degrees
+   fovy = angle
+
+   # distance to near plane from eye (defaults to 1)
+   near = dist
+}
+
+light {
+   # specify only ONE of direction or position
+   # (default is a position light at the origin)
+
+   # directional light (at infinity)
+   direction = (x,y,z)
+   # light location in a particular position
+   position = (x,y,z)
+
+   # light color (defaults to white)
+   color = (r,g,b)
+
+   # attenuation (defaults to no attenuation: (1,0,0))
+   attenuation = (Kc,Kl,Kq)
+}
+
+material {
+   name = string
+ 
+   # Material colors [all default to (0,0,0)]
+
+   # ambient
+   ka = (r,g,b) 
+   # diffuse
+   kd = (r,g,b) 
+   # specular
+   ks = (r,g,b)
+   # transparency
+   kt = (r,g,b) 
+
+   # Phong specular angle; 1 or higher (default 1.0)
+   shiny = s
+
+   # index of refraction; 1 or higher (default 1.0)
+   index = i
+
+   # texture map  (no default; use 1 for no repeat)
+   texture = filename u-repeat v-repeat
+}
+
+# Note: there is a default material called "default" which is the same as
+# the OpenGL default (ambient grey level 0.2, diffuse grey 0.8)
+
+# The default material is automatically selected if you do not choose
+# a material for a shape.  Materials must be defined before used.
+
+# --- Hierarchy
+
+# set hierarchy parent to most recently created object at this level
+# (cannot use down{} until children created at this level)
+down {}
+
+# set hierarchy parent to grandparent (underflow possible)
+up {}
+
+# --- Geometry
+
+# Names of objects are optional (but might help you debug)
+
+# sphere of radius 1, centered at origin
+sphere {
+   name = string
+   material = string
+}
+
+# cylinder of radius 1, on z axis (from z=0 to z=1)
+cylinder {
+   name = string
+   material = string
+}
+
+# cone with base radius 1, on z axis (from z=0 to z=1), with tip at z=0
+cone {
+   name = string
+   material = string
+}
+
+# box with side-length 2 (same bounds as the sphere)
+box {
+   name = string
+   material = string
+}
+
+# --- Matrix stack transformations (these all work just like OpenGL)
+
+# The matrix stack starts off with the identity on the top of the stack
+
+# translation
+translate { (x,y,z) }
+
+# non-uniform scale
+scale { (x,y,z) }
+
+# axis-angle rotation (angle is in degrees)
+rotate { angle (ax,ay,az) }
+
+# matrix operations
+push {}
+pop {}
+
+# set top matrix to identity
+identity {}
